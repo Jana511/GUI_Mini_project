@@ -3,7 +3,6 @@ import { ref, onMounted } from 'vue';
 import NavBar from './components/NavBar.vue';
 import ProductCard from './components/ProductCard.vue';
 
-// 1. Strict TypeScript Interface
 interface Product {
   id: number;
   title: string;
@@ -15,14 +14,36 @@ interface Product {
 const products = ref<Product[]>([]);
 const loading = ref(true);
 
-
 const fetchProducts = async () => {
   try {
-    const response = await fetch('https://dummyjson.com/products');
+    const response = await fetch('https://dummyjson.com/products?limit=0');
     const data = await response.json();
-    products.value = data.products; 
+    
+    const allowed = [
+  'beauty', 
+  'fragrances', 
+  'mens-shirts', 
+  'womens-dresses', 
+  'womens-bags', 
+  'womens-wallets',
+  'mens-wallets', 
+  'tops', 
+  'womens-shoes', 
+  'mens-shoes',
+  'jewelry',       
+  'sunglasses',    
+  'mens-watches',  
+  'womens-watches',
+  'mens-caps',  
+  'accessories',  
+  'skin-care'
+];
+
+    products.value = data.products.filter((p: Product) => 
+      allowed.includes(p.category)
+    );
   } catch (error) {
-    console.error("Error:", error);
+    console.error("API Error:", error);
   } finally {
     loading.value = false;
   }
@@ -34,24 +55,23 @@ onMounted(fetchProducts);
 <template>
   <div class="min-h-screen bg-gray-50">
     <NavBar />
-
-    <main class="container mx-auto py-12 px-6">
-      <header class="text-center mb-12">
-        <h2 class="text-4xl font-extrabold text-gray-900">Featured Products</h2>
-        <p class="text-gray-500 mt-2">Discover our best collection from DummyJSON</p>
+    <main class="container mx-auto py-10 px-6">
+      <header class="mb-10 text-center">
+        <h1 class="text-3xl font-black text-pink-900 uppercase">My Collection</h1>
       </header>
 
-      <div v-if="loading" class="flex justify-center items-center py-20">
-        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+      <div v-if="loading" class="flex flex-col items-center py-20 text-blue-600">
+        <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-blue-600 mb-4"></div>
+        <p>Fetching items...</p>
       </div>
 
-      <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+      <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         <ProductCard 
-          v-for="product in products" 
-          :key="product.id" 
-          :product="product" 
+          v-for="item in products" 
+          :key="item.id" 
+          :product="item" 
         />
       </div>
     </main>
-   </div>
+  </div>
 </template>
