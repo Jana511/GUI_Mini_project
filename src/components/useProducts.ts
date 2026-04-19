@@ -1,58 +1,58 @@
-import { ref, computed } from 'vue';
+import { ref, computed } from 'vue'
 
-/**
- * [span_5](start_span)Strict TypeScript Interface for API response[span_5](end_span)
- */
 export interface Product {
-  id: number;
-  title: string;
-  price: number;
-  description: string;
-  category: string;
-  thumbnail: string;
-  rating: number;
+  id: number
+  title: string
+  price: number
+  description: string
+  category: string
+  thumbnail: string
+  rating: number
 }
 
 export function useProducts() {
-  const products = ref<Product[]>([]);
-  const loading = ref<boolean>(true);
-  const searchQuery = ref<string>('');
-  const selectedCategory = ref<string>('all');
-  const maxPrice = ref<number>(2000);
+  const products = ref<Product[]>([])
+  const loading = ref(true)
+  const searchQuery = ref('')
 
-  const fetchProducts = async (): Promise<void> => {
+  const fetchProducts = async () => {
     try {
-      const response = await fetch('https://dummyjson.com/products?limit=0');
-      const data = await response.json();
+      // Fetching all products to filter locally
+      const response = await fetch('https://dummyjson.com/products?limit=0')
+      const data = await response.json()
       
-      // ප්‍රවර්ග තේරීම (Filtering specific categories)
-      const allowed = [
-        'beauty', 'fragrances', 'mens-shirts', 'womens-dresses', 
-        'womens-bags', 'sunglasses', 'mens-watches', 'skin-care'
-      ];
+      // Target categories based on your request
+      const targetCategories = [
+        'mens-watches', 
+        'womens-watches', 
+        'womens-bags', 
+        'mens-shoes',  
+        'mens-shirts',  
+        'womens-shoes', 
+        'womens-dresses', 
+        'tops', 
+        'fragrances',   
+        'skin-care',    
+        'beauty',       
+        'sunglasses'    
+      ]
 
-      products.value = data.products.filter((p: Product) => allowed.includes(p.category));
+      // Filter products strictly by your requested categories
+      products.value = data.products.filter((p: Product) => 
+        targetCategories.includes(p.category)
+      )
     } catch (error) {
-      console.error("API Error:", error);
+      console.error('Fetch error:', error)
     } finally {
-      loading.value = false;
+      loading.value = false
     }
-  };
+  }
 
-  /**
-   * [span_6](start_span)Filtered list based on search, category and price[span_6](end_span)
-   */
   const filteredProducts = computed(() => {
-    return products.value.filter((p) => {
-      const matchesCategory = selectedCategory.value === 'all' || p.category === selectedCategory.value;
-      const matchesSearch = p.title.toLowerCase().includes(searchQuery.value.toLowerCase());
-      const matchesPrice = p.price <= maxPrice.value;
-      return matchesCategory && matchesSearch && matchesPrice;
-    });
-  });
+    return products.value.filter(p => 
+      p.title.toLowerCase().includes(searchQuery.value.toLowerCase())
+    )
+  })
 
-  return { 
-    loading, searchQuery, selectedCategory, maxPrice, 
-    filteredProducts, fetchProducts 
-  };
+  return { loading, searchQuery, filteredProducts, fetchProducts }
 }
