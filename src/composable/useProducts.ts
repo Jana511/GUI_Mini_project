@@ -15,6 +15,7 @@ export function useProducts() {
   const searchQuery = ref('')
   const selectedCategory = ref('all')
   const maxPrice = ref(2000)
+  const sortBy = ref('default')
 
   const fetchProducts = async () => {
     loading.value = true
@@ -22,20 +23,12 @@ export function useProducts() {
       const response = await fetch('https://dummyjson.com/products?limit=0')
       const data = await response.json()
       
-      const allowedCategories = [ 'beauty', 
-      'fragrances', 
-      'mens-shirts', 
-      'womens-dresses', 
-      'womens-bags', 
-      'mens-wallets', 
-      'tops', 
-      'womens-shoes', 
-      'mens-shoes',
-      'jewelry',       
-      'sunglasses',    
-      'mens-watches',  
-      'womens-watches',
-      'skin-care']
+      const allowedCategories = [ 
+        'beauty', 'fragrances', 'mens-shirts', 'womens-dresses', 
+        'womens-bags', 'mens-wallets', 'tops', 'womens-shoes', 
+        'mens-shoes', 'jewelry', 'sunglasses', 'mens-watches', 
+        'womens-watches', 'skin-care'
+      ]
       products.value = data.products.filter((p: Product) => 
         allowedCategories.includes(p.category)
       )
@@ -47,16 +40,51 @@ export function useProducts() {
   }
 
   const filteredProducts = computed(() => {
-    return products.value.filter(product => {
+    let result = products.value.filter(product => {
       const matchesSearch = product.title.toLowerCase().includes(searchQuery.value.toLowerCase())
-      const matchesCategory = selectedCategory.value === 'all' || product.category === selectedCategory.value
+      
+      // Category matching with special case for 'women-fashion'
+      let matchesCategory = false
+      if (selectedCategory.value === 'all') {
+        matchesCategory = true
+      } else if (selectedCategory.value === 'women-fashion') {
+        // Women fashion includes both 'womens-dresses' and 'tops'
+        matchesCategory = product.category === 'womens-dresses' || product.category === 'tops'
+      } else {
+        matchesCategory = product.category === selectedCategory.value
+      }
+      
       const matchesPrice = product.price <= maxPrice.value
       return matchesSearch && matchesCategory && matchesPrice
     })
+
+    // Sorting
+    switch (sortBy.value) {
+      case 'price-asc':
+        result.sort((a, b) => a.price - b.price)
+        break
+      case 'price-desc':
+        result.sort((a, b) => b.price - a.price)
+        break
+      case 'name-asc':
+        result.sort((a, b) => a.title.localeCompare(b.title))
+        break
+      case 'name-desc':
+        result.sort((a, b) => b.title.localeCompare(a.title))
+        break
+      default:
+        result.sort((a, b) => a.id - b.id)
+    }
+    return result
   })
 
- 
   return { 
-    loading, searchQuery, selectedCategory, maxPrice, filteredProducts, fetchProducts 
+    loading, 
+    searchQuery, 
+    selectedCategory, 
+    maxPrice, 
+    sortBy,
+    filteredProducts, 
+    fetchProducts 
   }
 }
