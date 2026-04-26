@@ -16,60 +16,60 @@ const {
   fetchProducts
 } = useProducts()
 
-const openProduct = (item: any) => {
-  router.push(`/product/${item.id}`)
-}
+const openProduct = (item: any) => { router.push(`/product/${item.id}`) }
 
 const scrollToProducts = () => {
   const productsSection = document.getElementById('products-section')
   productsSection?.scrollIntoView({ behavior: 'smooth' })
 }
 
-onMounted(() => {
-  fetchProducts()
-})
+onMounted(() => { fetchProducts() })
 </script>
 
 <template>
-  <main class="container mx-auto p-6">
-    <!-- Hero Section -->
-    <section class="bg-white border border-gray-100 rounded-xl shadow-sm py-6 px-4 text-center mb-8 max-w-md mx-auto">
-      <div class="flex justify-center mb-3">
-        <div class="w-14 h-14 bg-gradient-to-br from-indigo-50 to-blue-100 rounded-2xl flex items-center justify-center shadow-sm text-3xl">
-          🛍️
-        </div>
+  <main class="min-h-screen bg-[#FFF9FA] container mx-auto px-6 pt-0 -mt-20">
+    
+    <section class="py-0 px-6 text-center mb-10 max-w-5xl mx-auto flex flex-col items-center">
+      
+      <div class="h-[500px] w-full max-w-[650px] flex items-center justify-center overflow-hidden mb-1 mt-16 transform hover:scale-105 transition-transform duration-1000">
+        <img 
+          src="https://static.vecteezy.com/system/resources/previews/031/418/335/large_2x/trendy-stylish-woman-rejoicing-with-sales-shopping-time-isolated-on-pink-studio-background-wearing-casual-outfit-straw-hat-summer-mood-photo.jpg" 
+          class="h-full w-full object-contain rounded-[4rem]" 
+          alt="StyleHub Hero Image"
+        />
       </div>
-      <h1 class="text-2xl md:text-3xl font-bold text-gray-800">
-        Welcome to StyleHub
-      </h1>
-      <p class="text-gray-500 text-sm mt-1">
-        Your Fashion Destination
-      </p>
+      
+      <div class="space-y-1">
+        <h1 class="text-3xl md:text-3xl font-black text-gray-950 tracking-tight italic font-serif uppercase">
+          Welcome to Style<span class="text-[#FF85A1]">Hub</span>
+        </h1>
+        <p class="text-pink-300 text-[10px] font-bold italic tracking-[0.4em] uppercase opacity-80">
+          Your Light Fashion Destination
+        </p>
+      </div>
+      
       <button 
         @click="scrollToProducts" 
-        class="mt-3 bg-indigo-600 text-white text-sm font-medium px-5 py-2 rounded-full shadow hover:bg-indigo-700 transition"
+        class="mt-6 bg-[#FF85A1] text-[12px] text-white uppercase tracking-[0.4em] font-black px-12 py-3.5 rounded-full shadow-lg shadow-pink-100/50 hover:bg-[#FF6B91] transition-all"
       >
         Shop Now →
       </button>
     </section>
 
-    <!-- Filter Bar with sortBy binding -->
     <FilterBar 
+      id="filter-section"
       v-model="searchQuery" 
       v-model:selectedCategory="selectedCategory" 
       v-model:maxPrice="maxPrice"
       v-model:sortBy="sortBy"
+      class="mb-10"
     />
 
-    <div v-if="loading" class="text-center py-24 text-2xl font-bold animate-pulse text-gray-400">
-      LOADING PRODUCTS...
+    <div v-if="loading" class="text-center py-24 text-[10px] font-black tracking-[0.5em] animate-pulse text-pink-300 uppercase">
+      Curating style for you...
     </div>
 
-    <div 
-      v-else-if="filteredProducts.length > 0" 
-      id="products-section"
-      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
-    >
+    <div v-else-if="filteredProducts.length > 0" id="products-section" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 scroll-mt-24">
       <ProductCard 
         v-for="item in filteredProducts" 
         :key="item.id" 
@@ -78,8 +78,13 @@ onMounted(() => {
       />
     </div>
 
-    <div v-else class="text-center py-24 text-gray-500 font-bold uppercase">
+    <div v-else class="text-center py-24 text-pink-200 text-[10px] font-black uppercase tracking-[0.5em]">
       No products found.
     </div>
   </main>
 </template>
+
+<style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,900;1,900&display=swap');
+.font-serif { font-family: 'Playfair Display', serif; }
+</style>

@@ -24,9 +24,9 @@ export function useProducts() {
       const data = await response.json()
       
       const allowedCategories = [ 
-        'beauty', 'fragrances', 'mens-shirts', 'womens-dresses', 
-        'womens-bags', 'mens-wallets', 'tops', 'womens-shoes', 
-        'mens-shoes', 'jewelry', 'sunglasses', 'mens-watches', 
+        'beauty', 'fragrances',  'womens-dresses', 
+        'womens-bags', 'tops', 'womens-shoes', 
+         'jewelry', 'sunglasses', 
         'womens-watches', 'skin-care'
       ]
       products.value = data.products.filter((p: Product) => 

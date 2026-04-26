@@ -16,7 +16,7 @@ defineEmits([
 const categories = [
   { name: 'All', value: 'all' },
   { name: 'Mens shirt', value: 'mens-shirts' },
-  { name: 'Women fashion', value: 'women-fashion' },   // will include tops + womens-dresses
+  { name: 'Women fashion', value: 'women-fashion' },
   { name: 'Bags', value: 'womens-bags' },
   { name: 'Perfume', value: 'fragrances' },
   { name: 'Watches', value: 'mens-watches' },
@@ -35,43 +35,40 @@ const sortOptions = [
 </script>
 
 <template>
-  <div class="bg-white rounded-2xl shadow-md border-l-4 border-indigo-400 border-t border-r border-b p-5 mb-8">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+  <div class="bg-white rounded-[30px] shadow-sm border-l-4 border-[#FF85A1] border-t border-r border-b border-pink-50 p-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
       
-      <!-- Search -->
       <div>
-        <label class="block text-xs font-semibold text-indigo-600 uppercase tracking-wider mb-2">
+        <label class="block text-[10px] font-bold text-[#FF85A1] uppercase tracking-[0.2em] mb-3">
           SEARCH PRODUCT
         </label>
         <input
           type="text"
           :value="modelValue"
           @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
-          placeholder="What are you looking for?"
-          class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-gray-700"
+          placeholder="Search items..."
+          class="w-full px-4 py-3 bg-[#FFF9FA] border border-pink-50 rounded-2xl focus:ring-2 focus:ring-[#FFC2D1] focus:bg-white outline-none text-gray-600 text-sm transition-all"
         />
       </div>
 
-      <!-- Category -->
       <div>
-        <label class="block text-xs font-semibold text-indigo-600 uppercase tracking-wider mb-2">
+        <label class="block text-[10px] font-bold text-[#FF85A1] uppercase tracking-[0.2em] mb-3">
           CATEGORY
         </label>
         <select
           :value="selectedCategory"
           @change="$emit('update:selectedCategory', ($event.target as HTMLSelectElement).value)"
-          class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-gray-700"
+          class="w-full px-4 py-3 bg-[#FFF9FA] border border-pink-50 rounded-2xl focus:ring-2 focus:ring-[#FFC2D1] focus:bg-white outline-none text-gray-600 text-sm transition-all cursor-pointer custom-select"
         >
-          <option v-for="cat in categories" :key="cat.value" :value="cat.value">
+          <option v-for="cat in categories" :key="cat.value" :value="cat.value" class="pink-option">
             {{ cat.name }}
           </option>
         </select>
       </div>
 
-      <!-- Max Price -->
       <div>
-        <label class="block text-xs font-semibold text-indigo-600 uppercase tracking-wider mb-2">
-          MAX PRICE: ${{ maxPrice }}
+        <label class="block text-[10px] font-bold text-[#FF85A1] uppercase tracking-[0.2em] mb-3">
+          MAX PRICE: <span class="text-gray-700">${{ maxPrice }}</span>
         </label>
         <input
           type="range"
@@ -80,25 +77,24 @@ const sortOptions = [
           min="0"
           max="2000"
           step="10"
-          class="w-full h-2 bg-gray-200 rounded-lg cursor-pointer accent-indigo-600"
+          class="w-full h-1.5 bg-pink-100 rounded-lg cursor-pointer accent-[#FF85A1]"
         />
-        <div class="flex justify-between text-xs text-gray-400 mt-1">
+        <div class="flex justify-between text-[9px] font-bold text-pink-200 mt-2 uppercase tracking-widest">
           <span>$0</span>
           <span>$2000+</span>
         </div>
       </div>
 
-      <!-- Sort By -->
       <div>
-        <label class="block text-xs font-semibold text-indigo-600 uppercase tracking-wider mb-2">
+        <label class="block text-[10px] font-bold text-[#FF85A1] uppercase tracking-[0.2em] mb-3">
           SORT BY
         </label>
         <select
           :value="sortBy"
           @change="$emit('update:sortBy', ($event.target as HTMLSelectElement).value)"
-          class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-gray-700"
+          class="w-full px-4 py-3 bg-[#FFF9FA] border border-pink-50 rounded-2xl focus:ring-2 focus:ring-[#FFC2D1] focus:bg-white outline-none text-gray-600 text-sm transition-all cursor-pointer custom-select"
         >
-          <option v-for="opt in sortOptions" :key="opt.value" :value="opt.value">
+          <option v-for="opt in sortOptions" :key="opt.value" :value="opt.value" class="pink-option">
             {{ opt.name }}
           </option>
         </select>
@@ -107,3 +103,32 @@ const sortOptions = [
     </div>
   </div>
 </template>
+
+<style scoped>
+/* Range thumb එක සුදු පැහැයට සකසා ලස්සන shadow එකක් ලබා දීම */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background: white;
+  border: 3px solid #FF85A1;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(255, 133, 161, 0.2);
+}
+
+/* Browser එකේ Default එන නිල් පැහැය (Blue focus) ඉවත් කිරීමට.
+   සටහන: සමහර Browsers වල 'option' එකේ color එක සීමා විය හැක.
+*/
+.custom-select option:checked {
+  background-color: #FF85A1 !important;
+  color: white !important;
+}
+
+/* Firefox සඳහා */
+.pink-option:checked {
+  background-color: #FF85A1 !important;
+  color: white !important;
+}
+</style>
