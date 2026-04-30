@@ -1,5 +1,6 @@
 import { ref, computed } from 'vue'
 
+// 1. Interface එකට නව දත්ත (rating, stock, brand) එක් කිරීම
 export interface Product {
   id: number;
   title: string;
@@ -7,6 +8,9 @@ export interface Product {
   category: string;
   description: string;
   thumbnail: string;
+  brand: string;   // නව දත්ත
+  rating: number;  // නව දත්ත
+  stock: number;   // නව දත්ත
 }
 
 export function useProducts() {
@@ -20,18 +24,31 @@ export function useProducts() {
   const fetchProducts = async () => {
     loading.value = true
     try {
+      // DummyJSON API එකෙන් සියලුම නිෂ්පාදන ලබා ගැනීම
       const response = await fetch('https://dummyjson.com/products?limit=0')
       const data = await response.json()
       
       const allowedCategories = [ 
-        'beauty', 'fragrances',  'womens-dresses', 
+        'beauty', 'fragrances', 'womens-dresses', 
         'womens-bags', 'tops', 'womens-shoes', 
-         'jewelry', 'sunglasses', 
+        'jewelry', 'sunglasses', 
         'womens-watches', 'skin-care'
       ]
-      products.value = data.products.filter((p: Product) => 
+
+      // Filter කිරීමේදී නව දත්ත (brand, rating, stock) නිවැරදිව පවතින බව තහවුරු කරයි
+      products.value = data.products.filter((p: any) => 
         allowedCategories.includes(p.category)
-      )
+      ).map((p: any) => ({
+        id: p.id,
+        title: p.title,
+        price: p.price,
+        category: p.category,
+        description: p.description,
+        thumbnail: p.thumbnail,
+        brand: p.brand || 'StyleHub Premium', // Brand එකක් නැත්නම් default අගයක් ලබා දීම
+        rating: p.rating,
+        stock: p.stock
+      }))
     } catch (error) {
       console.error("API Error:", error)
     } finally {
@@ -43,12 +60,11 @@ export function useProducts() {
     let result = products.value.filter(product => {
       const matchesSearch = product.title.toLowerCase().includes(searchQuery.value.toLowerCase())
       
-      // Category matching with special case for 'women-fashion'
+      // Category matching
       let matchesCategory = false
       if (selectedCategory.value === 'all') {
         matchesCategory = true
       } else if (selectedCategory.value === 'women-fashion') {
-        // Women fashion includes both 'womens-dresses' and 'tops'
         matchesCategory = product.category === 'womens-dresses' || product.category === 'tops'
       } else {
         matchesCategory = product.category === selectedCategory.value
@@ -58,7 +74,7 @@ export function useProducts() {
       return matchesSearch && matchesCategory && matchesPrice
     })
 
-    // Sorting
+    // Sorting Logic
     switch (sortBy.value) {
       case 'price-asc':
         result.sort((a, b) => a.price - b.price)

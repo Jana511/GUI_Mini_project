@@ -16,7 +16,7 @@ export function useAuth() {
       
       const data: User = await res.json()
       currentUser.value = data
-      localStorage.setItem('user', JSON.stringify(data)) // Persistence සඳහා
+      localStorage.setItem('user', JSON.stringify(data))
       return true
     } catch (err) {
       console.error(err)

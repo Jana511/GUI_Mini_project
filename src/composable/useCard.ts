@@ -33,7 +33,6 @@ export function useCart() {
     saveToLocalStorage()
   }
 
-  // + / - සඳහා මෙම function එක අවශ්‍යයි
   const updateQuantity = (id: number, newQty: number) => {
     const item = cart.value.find(item => item.id === id)
     if (item && newQty >= 1) {
@@ -49,7 +48,7 @@ export function useCart() {
   const cartCount = computed(() => cart.value.length)
 
   return {
-    cart,          // ref<CartItem[]> - template එකේ auto unwrap වේ
+    cart,
     addToCart,
     removeFromCart,
     updateQuantity,
